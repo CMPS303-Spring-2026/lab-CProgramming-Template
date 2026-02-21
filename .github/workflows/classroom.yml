@@ -1,0 +1,62 @@
+name: Autograding
+
+on: [push]
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: |
+          gcc main.c -o isTrace
+
+      # =======================
+      # Example Test Case 1
+      # ./isTrace RXBXRB RB XB XXX
+      # Expected: 1 1 0
+      # =======================
+      - name: Test 1 - Multiple patterns
+        run: |
+          [ "$(./isTrace RXBXRB RB XB XXX)" = "1 1 0" ]
+
+      # =======================
+      # Example Test Case 2
+      # ./isTrace bAd suBstandard
+      # Expected: 1
+      # =======================
+      - name: Test 2 - Case insensitive subsequence
+        run: |
+          [ "$(./isTrace bAd suBstandard)" = "1" ]
+
+      # =======================
+      # Example Test Case 3
+      # ./isTrace RXXB rb RT
+      # Expected: 1 0
+      # =======================
+      - name: Test 3 - Missing character
+        run: |
+          [ "$(./isTrace RXXB rb RT)" = "1 0" ]
+
+      # =======================
+      # Example Test Case 4
+      # ./isTrace sad sad
+      # Expected: 0
+      # =======================
+      - name: Test 4 - Equal length invalid
+        run: |
+          [ "$(./isTrace sad sad)" = "0" ]
+
+      # =======================
+      # Example Test Case 5
+      # ./isTrace Waiting Wt
+      # Expected: 1
+      # =======================
+      - name: Test 5 - Simple match
+        run: |
+          [ "$(./isTrace Waiting Wt)" = "1" ]
+
+      - name: All tests passed
+        run: echo "✅ All example test cases passed"
